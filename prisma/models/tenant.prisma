@@ -1,0 +1,20 @@
+model Tenant {
+  id                    Int     @id @default(autoincrement())
+  userId                Int     @unique
+  aadhaarId             Int     @unique
+  address               Json?
+  comment               String?
+  dob                   String?
+  expectedExitDate      String?
+  gender                Gender
+  joiningDate           String
+  localGuardianName     String?
+  localGuardianPhone    String?
+  localGuardianRelation String?
+  profilePhoto          String?
+  hostelId              Int?
+  aadhaar               Aadhaar @relation(fields: [aadhaarId], references: [id])
+  hostel                Hostel? @relation(fields: [hostelId], references: [id])
+  user                  User    @relation(fields: [userId], references: [id])
+  bed                   Bed?
+}

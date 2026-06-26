@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Warden" ALTER COLUMN "dob" DROP NOT NULL;

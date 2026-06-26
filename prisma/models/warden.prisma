@@ -1,0 +1,14 @@
+model Warden {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  aadhaarId       Int      @unique
+  address         Json?
+  alternateNumber String?
+  comment         String?
+  dob             String?
+  gender          Gender
+  profilePhoto    String?
+  aadhaars        Aadhaar  @relation(fields: [aadhaarId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
+  hostel          Hostel[] @relation("HostelToWarden")
+}

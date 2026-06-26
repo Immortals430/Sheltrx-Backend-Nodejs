@@ -1,0 +1,34 @@
+model Hostel {
+  id       Int @id @default(autoincrement())
+  campusId Int
+
+  hostelName       String
+  hostelCode       String
+  address          Json?
+  hostelType       HostelType
+  organizationType OrganizationType
+  contactEmail     String?
+  contactPhone     String?
+  totalFloors      String?          @default("1")
+  flag             Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  campus Campus   @relation(fields: [campusId], references: [id], onDelete: Cascade)
+  tenant Tenant[]
+  staff  Staff[]  @relation("HostelToStaff")
+  warden Warden[] @relation("HostelToWarden")
+  room   Room[]
+}
+
+enum HostelType {
+  boys
+  girls
+  coed
+}
+
+enum OrganizationType {
+  pg
+  hostel
+}

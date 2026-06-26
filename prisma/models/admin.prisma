@@ -1,0 +1,15 @@
+model Admin {
+  id               Int                   @id @default(autoincrement())
+  userId           Int                   @unique
+  billingAddress   String?
+  profilePhoto     String?
+  subscriptionPlan AdminSubscriptionPlan @default(basic)
+  aadhaarId        Int                   @unique
+  aadhaarDetails   Aadhaar               @relation(fields: [aadhaarId], references: [id])
+  user             User                  @relation(fields: [userId], references: [id])
+  campus           Campus[]              @relation("AdminToCampus")
+}
+
+enum AdminSubscriptionPlan {
+  basic
+}

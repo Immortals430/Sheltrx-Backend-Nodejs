@@ -1,0 +1,13 @@
+import { z } from "zod";
+
+
+export const staffQueries = z.object({
+  page: z.coerce.number().optional().default(1),
+  limit: z.coerce.number().optional().default(10),
+  hostelId: z.coerce.number().optional(),
+  search: z.string().optional(),
+//   sortBy: z.enum([ "createdAt"]).optional().default("createdAt"),
+//   sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
+});
+
+export type StaffQueries = z.infer<typeof staffQueries>;

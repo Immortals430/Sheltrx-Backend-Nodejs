@@ -1,0 +1,16 @@
+model Institution {
+  id              Int      @id @default(autoincrement())
+  institutionName String
+  contactEmail    String?
+  contactPhone    String?
+  adminName       String?
+  adminEmail      String?
+  adminPhone      String?
+  logo            String?
+  isActive        Boolean  @default(true)
+  comment         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  address         Json?
+  campus          Campus[]
+}

@@ -1,0 +1,16 @@
+model RoomType {
+    id            String   @id @default(uuid())
+    hostelId Int
+
+    roomTypeName  String
+    priceWithFood Int
+    priceWithoutFood Int
+    totalBeds Int
+    isAc Boolean
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    
+    room Room[]
+}

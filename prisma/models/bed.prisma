@@ -1,0 +1,18 @@
+model Bed {
+    id       Int  @id @default(autoincrement())
+    tenantId Int? @unique
+    roomId   Int
+
+    bedNumber String
+    foodPlan  FoodPlan
+
+    // roomId Int
+    // pricePerMonth 
+    // isOccupied
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    room   Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+    tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+}

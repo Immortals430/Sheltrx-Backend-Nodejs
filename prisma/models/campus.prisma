@@ -1,0 +1,20 @@
+model Campus {
+  id            Int         @id @default(autoincrement())
+  institutionId Int
+  campusName    String
+  campusCode    String
+  address       Json
+  contactPerson String?
+  contactEmail  String?
+  contactPhone  String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  city          String
+  country       String
+  state         String
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  hostel        Hostel[]
+  admin         Admin[]     @relation("AdminToCampus")
+
+  @@index([institutionId, createdAt])
+}
