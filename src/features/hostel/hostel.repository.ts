@@ -70,6 +70,22 @@ export default class HostelRepository {
       },
     });
   }
+
+  // get hostel details
+  async getAdminHostel(hostelId: number, adminId: number) {
+    return prisma.hostel.findUnique({
+      where: {
+        id: hostelId,
+        campus: {
+          admin: {
+            some: {
+              userId: adminId,
+            },
+          },
+        },
+      },
+    });
+  }
   // create hostel
   async createHostel(campusId: number, payload: CreatePayload) {
     return prisma.hostel.create({

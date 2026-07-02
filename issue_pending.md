@@ -1,0 +1,1 @@
+room type assosiated with room have total bed row but admin can create more beds

@@ -3,7 +3,7 @@ import { createClient } from "redis";
 export const redisClient = createClient(
   process.env.REDIS_URL
     ? {
-        url: process.env.REDIS_URL,
+      url: process.env.REDIS_URL,
       }
     : {
         socket: {

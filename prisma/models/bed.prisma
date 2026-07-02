@@ -6,7 +6,6 @@ model Bed {
     bedNumber String
     foodPlan  FoodPlan
 
-    // roomId Int
     // pricePerMonth 
     // isOccupied
 

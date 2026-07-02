@@ -1,16 +1,17 @@
 model RoomType {
-    id            String   @id @default(uuid())
+    id       Int @id @default(autoincrement())
     hostelId Int
 
-    roomTypeName  String
-    priceWithFood Int
+    roomTypeName     String
+    priceWithFood    Int
     priceWithoutFood Int
-    totalBeds Int
-    isAc Boolean
+    totalBeds        Int
+    isAc             Boolean
+    comment          String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    
     room Room[]
+    hostel Hostel @relation(fields: [hostelId], references: [id], onDelete: Cascade)
 }

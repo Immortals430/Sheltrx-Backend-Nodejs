@@ -14,6 +14,9 @@ import hostelRouter from "./features/hostel/hostel.routes.js";
 import adminRouter from "./features/admin/admin.routes.js";
 import wardenRouter from "./features/warden/warden.routes.js";
 import staffRouter from "./features/staff/staff.routes.js";
+import roomRouter from "./features/room/room.routes.js";
+import roomTypeRouter from "./features/roomType/roomType.routes.js";
+// import bedRouter from "./features/bed/bed.routes.js";
 
 export const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -38,19 +41,22 @@ app.use(
       // httpOnly: true,
       // secure: true,
       // sameSite: "lax",
-      maxAge: 1000 * 60 * 60 * 24 * 7
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   }),
 );
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/warden", wardenRouter);
+app.use("/api/v1/staff", staffRouter);
 app.use("/api/v1/institution", institutionRouter);
 app.use("/api/v1/campus", campusRouter);
-app.use("/api/v1/hostel", hostelRouter)
-app.use("/api/v1/admin", adminRouter)
-app.use("/api/v1/warden", wardenRouter)
-app.use("/api/v1/staff", staffRouter)
+app.use("/api/v1/hostel", hostelRouter);
+app.use("/api/v1/room", roomRouter);
+app.use("/api/v1/room-type", roomTypeRouter)
+// app.use("/api/v1/bed", bedRouter)
 
 app.use(errorhandler);
 

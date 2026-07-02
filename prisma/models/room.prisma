@@ -1,7 +1,7 @@
 model Room {
     id         Int    @id @default(autoincrement())
     hostelId   Int
-    roomTypeId String
+    roomTypeId Int
 
     roomNumber String
     floor      String

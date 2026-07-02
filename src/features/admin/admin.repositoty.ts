@@ -48,7 +48,7 @@ export default class AdminRepository {
     });
   }
 
-  async getAdminDetail(userId: number) {
+  async getAdminDetail(userId: number, includeHostel = false) {
     return await prisma.admin.findUnique({
       where: {
         userId,
@@ -62,6 +62,13 @@ export default class AdminRepository {
             role: true,
           },
         },
+        ...(includeHostel && {
+          campus: {
+            include: {
+              hostel: true,
+            },
+          },
+        }),
       },
     });
   }
