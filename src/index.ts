@@ -16,7 +16,7 @@ import wardenRouter from "./features/warden/warden.routes.js";
 import staffRouter from "./features/staff/staff.routes.js";
 import roomRouter from "./features/room/room.routes.js";
 import roomTypeRouter from "./features/roomType/roomType.routes.js";
-// import bedRouter from "./features/bed/bed.routes.js";
+import bedRouter from "./features/bed/bed.routes.js";
 
 export const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -56,7 +56,7 @@ app.use("/api/v1/campus", campusRouter);
 app.use("/api/v1/hostel", hostelRouter);
 app.use("/api/v1/room", roomRouter);
 app.use("/api/v1/room-type", roomTypeRouter)
-// app.use("/api/v1/bed", bedRouter)
+app.use("/api/v1/bed", bedRouter)
 
 app.use(errorhandler);
 

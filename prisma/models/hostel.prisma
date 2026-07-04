@@ -21,6 +21,9 @@ model Hostel {
   warden Warden[] @relation("HostelToWarden")
   room   Room[]
   roomType RoomType[]
+  mealType MealType[]
+  mealPack MealPack[]
+  menuPreset MenuPreset[]
 }
 
 enum HostelType {

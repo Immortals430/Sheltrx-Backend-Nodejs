@@ -1,88 +1,139 @@
-// import type { CreateBeds, UpdateBed, BedQueries } from "./bed.validator";
-// import type { Prisma } from "generated/prisma/client";
-// import BedRepository from "./bed.repository";
-// import { ApplicationError } from "@/middleware/errorHandler";
-// import { prisma } from "@/lib/prisma";
+import type { BedQueries, CreateBeds, UpdateBed } from "./bed.validator";
+import type { Prisma } from "generated/prisma/client";
+import BedRepository from "./bed.repository";
+import { ApplicationError } from "@/middleware/errorHandler";
+import { prisma } from "@/lib/prisma";
+import type { CurrentUser } from "@/types/express";
+import HostelRepository from "../hostel/hostel.repository";
+import RoomRepository from "../room/room.repository";
 
-// export default class BedService {
-//   bedRepository;
+export default class BedService {
+  bedRepository;
+  hostelRepository;
+  roomRepository;
+  constructor() {
+    this.bedRepository = new BedRepository();
+    this.hostelRepository = new HostelRepository();
+    this.roomRepository = new RoomRepository();
+  }
 
-//   constructor() {
-//     this.bedRepository = new BedRepository();
-//   }
+  async getBeds({ page, limit, roomId }: BedQueries, currentUser: CurrentUser) {
+    const skip = (page - 1) * limit;
 
-//   async getBeds({ page, limit, roomId, foodPlan, availability }: BedQueries) {
-//     const skip = (page - 1) * limit;
+    const filters: Prisma.BedWhereInput = {
+      ...(roomId && { roomId }),
 
-//     const filters: Prisma.BedWhereInput = {
-//       ...(roomId && { roomId }),
+      ...(currentUser.role === "admin" && {
+        room: {
+          hostel: {
+            campus: {
+              admin: {
+                some: {
+                  userId: currentUser.userId,
+                },
+              },
+            },
+          },
+        },
+      }),
 
-//       ...(foodPlan && { foodPlan }),
+      ...(currentUser.role === "warden" && {
+        room: {
+          hostel: {
+            warden: {
+              some: {
+                userId: currentUser.userId,
+              },
+            },
+          },
+        },
+      }),
+    };
 
-//       ...(availability === "vacant" && { tenantId: null }),
+    return await this.bedRepository.getBeds(filters, skip, limit);
+  }
 
-//       ...(availability === "occupied" && { tenantId: { not: null } }),
-//     };
+  //   async getBedById(id: number) {
+  //     const bed = await this.bedRepository.getBedById(id);
+  //     if (!bed) throw new ApplicationError("Bed not found", 404);
+  //     return bed;
+  //   }
 
-//     return await this.bedRepository.getBeds(filters, skip, limit);
-//   }
+  async createBed(payload: CreateBeds, currentUser: CurrentUser) {
+    const room = await this.roomRepository.getRoomDetails(payload.roomId);
 
-//   async getBedById(id: number) {
-//     const bed = await this.bedRepository.getBedById(id);
-//     if (!bed) throw new ApplicationError("Bed not found", 404);
-//     return bed;
-//   }
+    if (!room) throw new ApplicationError("Room not found", 404);
 
-//   async createBeds(payload: CreateBeds) {
-//     // Verify the room exists
-//     const room = await prisma.room.findUnique({
-//       where: { id: payload.roomId },
-//       include: { roomType: true },
-//     });
+    if (currentUser.role === "admin") {
+      const hostel = await this.hostelRepository.getAdminHostel(
+        room.hostelId,
+        currentUser.userId,
+      );
 
-//     if (!room) throw new ApplicationError("Room not found", 404);
+      if (!hostel)
+        throw new ApplicationError(
+          "Cannot perform action for other hostel",
+          404,
+        );
+    }
 
-//     // Check for duplicate bed numbers within the request
-//     const bedNumbers = payload.beds.map((b) => b.bedNumber);
-//     const uniqueBedNumbers = new Set(bedNumbers);
-//     if (uniqueBedNumbers.size !== bedNumbers.length) {
-//       throw new ApplicationError(
-//         "Duplicate bed numbers found in the request",
-//         400,
-//       );
-//     }
+    const beds = await this.bedRepository.createBed(payload);
 
-//     // Check for bed number conflicts in the DB
-//     const existingBeds = await prisma.bed.findMany({
-//       where: {
-//         roomId: payload.roomId,
-//         bedNumber: { in: bedNumbers },
-//       },
-//     });
+    return beds;
+  }
 
-//     if (existingBeds.length > 0) {
-//       const conflicting = existingBeds.map((b) => b.bedNumber).join(", ");
-//       throw new ApplicationError(
-//         `Bed numbers already exist in this room: ${conflicting}`,
-//         409,
-//       );
-//     }
+  async updateBed(bedId: number, payload: UpdateBed, currentUser: CurrentUser) {
+    const bed = await this.bedRepository.getBedByDetails(bedId);
 
-//     // Bulk create inside a transaction
-//     const createdBeds = await prisma.$transaction(async (tx) => {
-//       return await this.bedRepository.createBeds(payload, tx);
-//     });
+    if (!bed) {
+      throw new ApplicationError("Bed not found", 404);
+    }
 
-//     return createdBeds;
-//   }
+    if (currentUser.role === "admin") {
+      const bedAdmin = await this.bedRepository.getBedAdmin(
+        bedId,
+        currentUser.userId,
+      );
 
-//   async updateBed(id: number, payload: UpdateBed) {
-//     await this.getBedById(id); // ensure bed exists
-//     return await this.bedRepository.updateBed(id, payload);
-//   }
+      if (!bedAdmin) {
+        throw new ApplicationError(
+          "Cannot perform action for other hostel",
+          404,
+        );
+      }
+    }
 
-//   async deleteBed(id: number) {
-//     await this.getBedById(id); // ensure bed exists
-//     return await this.bedRepository.deleteBed(id);
-//   }
-// }
+    return await this.bedRepository.updateBed(bedId, {
+      ...(payload.bedNumber !== undefined && {
+        bedNumber: payload.bedNumber,
+      }),
+
+      // ...(payload.foodPlan !== undefined && {
+      //   foodPlan: payload.foodPlan,
+      // }),
+    });
+  }
+
+  async deleteBed(bedId: number, currentUser: CurrentUser) {
+    const bed = await this.bedRepository.getBedByDetails(bedId);
+
+    if (!bed) {
+      throw new ApplicationError("Bed not found", 404);
+    }
+
+    if (currentUser.role === "admin") {
+      const bedAdmin = await this.bedRepository.getBedAdmin(
+        bedId,
+        currentUser.userId,
+      );
+
+      if (!bedAdmin) {
+        throw new ApplicationError(
+          "Cannot perform action for other hostel",
+          404,
+        );
+      }
+    }
+    return await this.bedRepository.deleteBed(bedId);
+  }
+}

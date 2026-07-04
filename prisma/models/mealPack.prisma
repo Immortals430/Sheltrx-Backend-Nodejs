@@ -1,0 +1,20 @@
+model MealPack {
+    id       Int @id @default(autoincrement())
+    hostelId Int
+
+    mealPackName String
+    price        String
+    foodPlan     FoodPlan
+    dayCategory  DayCategory
+    mealTypeId   Int[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    hostel Hostel @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+}
+
+enum DayCategory {
+    weekdays
+    weekends
+}
