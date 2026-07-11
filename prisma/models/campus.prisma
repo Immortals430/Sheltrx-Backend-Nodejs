@@ -14,7 +14,7 @@ model Campus {
   state         String
   institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
   hostel        Hostel[]
-  admin         Admin[]     @relation("AdminToCampus")
+  admin         Admin[]     
 
   @@index([institutionId, createdAt])
 }

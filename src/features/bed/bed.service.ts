@@ -6,15 +6,18 @@ import { prisma } from "@/lib/prisma";
 import type { CurrentUser } from "@/types/express";
 import HostelRepository from "../hostel/hostel.repository";
 import RoomRepository from "../room/room.repository";
+import UserService from "../user/user.service";
 
 export default class BedService {
   bedRepository;
   hostelRepository;
   roomRepository;
+  userService
   constructor() {
     this.bedRepository = new BedRepository();
     this.hostelRepository = new HostelRepository();
     this.roomRepository = new RoomRepository();
+    this.userService = new UserService()
   }
 
   async getBeds({ page, limit, roomId }: BedQueries, currentUser: CurrentUser) {
@@ -65,16 +68,10 @@ export default class BedService {
     if (!room) throw new ApplicationError("Room not found", 404);
 
     if (currentUser.role === "admin") {
-      const hostel = await this.hostelRepository.getAdminHostel(
+      await this.userService.validateHostelAccessForAdmin(
         room.hostelId,
         currentUser.userId,
       );
-
-      if (!hostel)
-        throw new ApplicationError(
-          "Cannot perform action for other hostel",
-          404,
-        );
     }
 
     const beds = await this.bedRepository.createBed(payload);

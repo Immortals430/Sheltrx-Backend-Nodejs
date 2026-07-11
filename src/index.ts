@@ -17,6 +17,11 @@ import staffRouter from "./features/staff/staff.routes.js";
 import roomRouter from "./features/room/room.routes.js";
 import roomTypeRouter from "./features/roomType/roomType.routes.js";
 import bedRouter from "./features/bed/bed.routes.js";
+import mealTypeRouter from "./features/meal/mealType/mealType.routes.js";
+import mealPackRouter from "./features/meal/mealPack/mealPack.routes.js";
+import mealPreferenceRouter from "./features/meal/mealPreference/mealPreference.routes.js";
+import menuPresetRouter from "./features/meal/menuPreset/menuPreset.routes.js";
+import foodMenuRouter from "./features/meal/foodMenu/foodMenu.routes.js";
 
 export const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -55,8 +60,13 @@ app.use("/api/v1/institution", institutionRouter);
 app.use("/api/v1/campus", campusRouter);
 app.use("/api/v1/hostel", hostelRouter);
 app.use("/api/v1/room", roomRouter);
-app.use("/api/v1/room-type", roomTypeRouter)
-app.use("/api/v1/bed", bedRouter)
+app.use("/api/v1/room-type", roomTypeRouter);
+app.use("/api/v1/bed", bedRouter);
+app.use("/api/v1/menu-preset", menuPresetRouter);
+app.use("/api/v1/food-menu", foodMenuRouter);
+app.use("/api/v1/meal-type", mealTypeRouter);
+app.use("/api/v1/meal-pack", mealPackRouter);
+app.use("/api/v1/meal-preference", mealPreferenceRouter);
 
 app.use(errorhandler);
 

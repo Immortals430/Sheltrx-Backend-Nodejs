@@ -48,4 +48,10 @@ export default class TenantRepository {
       },
     });
   }
+
+  async getTenantDetail(tenantId: number) {
+    return prisma.tenant.findUnique({
+      where: { userId: tenantId },
+    });
+  }
 }

@@ -13,5 +13,5 @@ model Bed {
     updatedAt DateTime @updatedAt
 
     room   Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
-    tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+    tenant Tenant? @relation(fields: [tenantId], references: [userId], onDelete: SetNull)
 }

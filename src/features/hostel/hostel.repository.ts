@@ -102,18 +102,19 @@ export default class HostelRepository {
   // }
 
   // get hostel warden
-  async getAdminWarden(hostelId: number, wardenId: number) {
-    return prisma.hostel.findUnique({
-      where: {
-        id: hostelId,
-        warden: {
-          some: {
-            userId: wardenId,
-          },
-        },
-      },
-    });
-  }
+  // async getAdminWarden(hostelId: number, wardenId: number) {
+  //   return prisma.hostel.findUnique({
+  //     where: {
+  //       id: hostelId,
+  //       warden: {
+  //         some: {
+  //           userId: wardenId,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
+
 
   // create hostel
   async createHostel(campusId: number, payload: CreatePayload) {

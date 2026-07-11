@@ -1,0 +1,14 @@
+model FoodMenu {
+    id         Int @id @default(autoincrement())
+    hostelId   Int
+    mealTypeId Int
+
+    foodItem Json
+    date     DateTime  
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    hostel   Hostel   @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+    mealType MealType @relation(fields: [mealTypeId], references: [id], onDelete: Cascade)
+}

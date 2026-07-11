@@ -9,15 +9,18 @@ import RoomTypeRepository from "./roomType.repository";
 import HostelRepository from "../hostel/hostel.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
 import AdminRepository from "../admin/admin.repositoty";
+import UserService from "../user/user.service";
 
 export default class RoomTypeService {
   roomTypeRepository;
   hostelRepository;
   adminRpository;
+  userService;
   constructor() {
     this.roomTypeRepository = new RoomTypeRepository();
     this.hostelRepository = new HostelRepository();
     this.adminRpository = new AdminRepository();
+    this.userService = new UserService();
   }
 
   async getRoomTypes(
@@ -64,16 +67,10 @@ export default class RoomTypeService {
     if (!roomType) throw new ApplicationError("Room type not found", 404);
 
     if (currentUser.role === "admin") {
-      const hostel = await this.hostelRepository.getAdminHostel(
+      await this.userService.validateHostelAccessForAdmin(
         roomType.hostelId,
         currentUser.userId,
       );
-
-      if (!hostel)
-        throw new ApplicationError(
-          "Cannot perform action for other hostel",
-          404,
-        );
     }
 
     const deletedRoomType =
@@ -94,16 +91,10 @@ export default class RoomTypeService {
     if (!roomType) throw new ApplicationError("Room type not found", 404);
 
     if (currentUser.role === "admin") {
-      const hostel = await this.hostelRepository.getAdminHostel(
+      await this.userService.validateHostelAccessForAdmin(
         roomType.hostelId,
         currentUser.userId,
       );
-
-      if (!hostel)
-        throw new ApplicationError(
-          "Cannot perform action for other hostel",
-          404,
-        );
     }
 
     const updatedRoomType = await this.roomTypeRepository.updateRoomType(

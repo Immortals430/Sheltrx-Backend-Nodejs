@@ -12,18 +12,17 @@ export type RoomTypeQueries = z.infer<typeof roomTypeQueries>;
 export const createRoomType = z.object({
   hostelId: z.coerce.number(),
   roomTypeName: z.string(),
-  priceWithFood: z.coerce.number(),
-  priceWithoutFood: z.coerce.number(),
+  priceWithFood: z.number().positive(),
+  priceWithoutFood: z.number().positive(),
   totalBeds: z.coerce.number(),
   isAc: z.boolean(),
   comment: z.string().optional(),
 });
 
-
 export const updateRoomType = z.object({
   roomTypeName: z.string().optional(),
-  priceWithFood: z.coerce.number().optional(),
-  priceWithoutFood: z.coerce.number().optional(),
+  priceWithFood: z.number().positive().optional(),
+  priceWithoutFood: z.number().positive().optional(),
   totalBeds: z.coerce.number().optional(),
   isAc: z.boolean().optional(),
   comment: z.string().optional(),

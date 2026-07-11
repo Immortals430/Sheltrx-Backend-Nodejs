@@ -2,12 +2,16 @@ model MealType {
     id       Int @id @default(autoincrement())
     hostelId Int
 
-    mealTypeName      String
-    startTime String
-    endTime   String
+    mealTypeName String
+    startTime    String
+    endTime      String
+    isActive     Boolean  @default(true)
+    deletedAt    DateTime? 
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    hostel Hostel @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+    hostel   Hostel     @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+    mealPack MealPack[]
+    foodMenu FoodMenu[]
 }

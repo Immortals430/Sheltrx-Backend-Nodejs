@@ -8,17 +8,20 @@ import RoomTypeRepository from "../roomType/roomType.repository";
 import { prisma } from "@/lib/prisma";
 import BedRepository from "../bed/bed.repository";
 import type { UpdatePayload } from "../roomType/roomType.validator";
+import UserService from "../user/user.service";
 
 export default class RoomService {
   roomRepository;
   hostelRepository;
   roomTypeRepository;
   bedRepository;
+  userService;
   constructor() {
     this.roomRepository = new RoomRepository();
     this.hostelRepository = new HostelRepository();
     this.roomTypeRepository = new RoomTypeRepository();
     this.bedRepository = new BedRepository();
+    this.userService = new UserService();
   }
 
   async getRooms(
@@ -124,16 +127,10 @@ export default class RoomService {
     if (!room) throw new ApplicationError("Room not found", 404);
 
     if (currentUser.role === "admin") {
-      const hostel = await this.hostelRepository.getAdminHostel(
+      await this.userService.validateHostelAccessForAdmin(
         room.hostelId,
         currentUser.userId,
       );
-
-      if (!hostel)
-        throw new ApplicationError(
-          "Cannot perform action for other hostel",
-          404,
-        );
     }
 
     const deletedRoom = await this.roomRepository.deleteRoom(roomId);
@@ -141,7 +138,11 @@ export default class RoomService {
     return deletedRoom;
   }
 
-  async updateRoom(roomId: number, currentUser: CurrentUser, payload: UpdateRoom) {
+  async updateRoom(
+    roomId: number,
+    currentUser: CurrentUser,
+    payload: UpdateRoom,
+  ) {
     const room = await this.roomRepository.getRoomDetails(roomId);
 
     if (!room) {
@@ -149,16 +150,12 @@ export default class RoomService {
     }
 
     if (currentUser.role === "admin") {
-      const hostel = await this.hostelRepository.getAdminHostel(
+      await this.userService.validateHostelAccessForAdmin(
         room.hostelId,
         currentUser.userId,
       );
 
-      if (!hostel)
-        throw new ApplicationError(
-          "Cannot perform action for other hostel",
-          404,
-        );
+    
     }
 
     const updatedRoom = await this.roomRepository.updateRoom(roomId, {

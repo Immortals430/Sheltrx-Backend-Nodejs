@@ -5,9 +5,10 @@ model Admin {
   profilePhoto     String?
   subscriptionPlan AdminSubscriptionPlan @default(basic)
   aadhaarId        Int                   @unique
-  aadhaarDetails   Aadhaar               @relation(fields: [aadhaarId], references: [id])
-  user             User                  @relation(fields: [userId], references: [id])
-  campus           Campus[]              @relation("AdminToCampus")
+
+  aadhaarDetails Aadhaar  @relation(fields: [aadhaarId], references: [id])
+  user           User     @relation(fields: [userId], references: [id])
+  campus         Campus[]
 }
 
 enum AdminSubscriptionPlan {

@@ -3,7 +3,7 @@ model MenuPreset{
     hostelId Int
 
     menuPresetName String
-    menuPresetItem String[]
+    menuPresetItem Json
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

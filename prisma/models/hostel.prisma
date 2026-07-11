@@ -24,6 +24,7 @@ model Hostel {
   mealType MealType[]
   mealPack MealPack[]
   menuPreset MenuPreset[]
+  foodMenu FoodMenu[]
 }
 
 enum HostelType {

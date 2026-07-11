@@ -1,7 +1,9 @@
 model Tenant {
-  id                    Int     @id @default(autoincrement())
-  userId                Int     @unique
-  aadhaarId             Int     @unique
+  id        Int  @id @default(autoincrement())
+  userId    Int  @unique
+  aadhaarId Int  @unique
+  hostelId  Int?
+
   address               Json?
   comment               String?
   dob                   String?
@@ -12,9 +14,11 @@ model Tenant {
   localGuardianPhone    String?
   localGuardianRelation String?
   profilePhoto          String?
-  hostelId              Int?
-  aadhaar               Aadhaar @relation(fields: [aadhaarId], references: [id])
-  hostel                Hostel? @relation(fields: [hostelId], references: [id])
-  user                  User    @relation(fields: [userId], references: [id])
-  bed                   Bed?
+
+  aadhaar Aadhaar @relation(fields: [aadhaarId], references: [id])
+  hostel  Hostel? @relation(fields: [hostelId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  bed     Bed?
+
+  mealPreference MealPreference[]
 }
