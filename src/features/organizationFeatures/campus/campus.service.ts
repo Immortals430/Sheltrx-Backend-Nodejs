@@ -10,9 +10,9 @@ import InstitutionRepository from "../instittution/institution.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
 import type { Prisma } from "generated/prisma/browser";
 import type { CurrentUser } from "@/types/express";
-import { superAdmin } from "../auth/auth.validator";
-import AdminRepository from "../admin/admin.repositoty";
-import UserRepository from "../user/user.repository";
+import { superAdmin } from "../../auth/auth.validator";
+import AdminRepository from "../../userFeatures/admin/admin.repositoty";
+import UserRepository from "../../userFeatures/user/user.repository";
 
 export default class CampusService {
   campusRepository;

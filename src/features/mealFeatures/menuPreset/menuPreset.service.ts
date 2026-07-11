@@ -6,9 +6,9 @@ import type {
 } from "./menuPreset.validator";
 import { Prisma } from "generated/prisma/client";
 import MenuPresetRepository from "./menuPreset.repository";
-import HostelRepository from "../../hostel/hostel.repository";
+import HostelRepository from "../../organizationFeatures/hostel/hostel.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
-import UserService from "../../user/user.service";
+import UserService from "../../userFeatures/user/user.service";
 
 export default class MenuPresetService {
   menuPresetRepository;
@@ -53,7 +53,9 @@ export default class MenuPresetService {
   }
 
   async createMenuPreset(payload: CreateMenuPreset, currentUser: CurrentUser) {
-    const hostel = await this.hostelRepository.getHostelDetail(payload.hostelId);
+    const hostel = await this.hostelRepository.getHostelDetail(
+      payload.hostelId,
+    );
 
     if (!hostel) throw new ApplicationError("Hostel not found", 404);
 
@@ -64,7 +66,8 @@ export default class MenuPresetService {
       );
     }
 
-    const menuPreset = await this.menuPresetRepository.createMenuPreset(payload);
+    const menuPreset =
+      await this.menuPresetRepository.createMenuPreset(payload);
 
     return menuPreset;
   }

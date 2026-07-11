@@ -6,18 +6,18 @@ import { prisma } from "@/lib/prisma";
 import type { CurrentUser } from "@/types/express";
 import HostelRepository from "../hostel/hostel.repository";
 import RoomRepository from "../room/room.repository";
-import UserService from "../user/user.service";
+import UserService from "../../userFeatures/user/user.service";
 
 export default class BedService {
   bedRepository;
   hostelRepository;
   roomRepository;
-  userService
+  userService;
   constructor() {
     this.bedRepository = new BedRepository();
     this.hostelRepository = new HostelRepository();
     this.roomRepository = new RoomRepository();
-    this.userService = new UserService()
+    this.userService = new UserService();
   }
 
   async getBeds({ page, limit, roomId }: BedQueries, currentUser: CurrentUser) {

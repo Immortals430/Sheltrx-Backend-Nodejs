@@ -8,9 +8,9 @@ import type {
 import { Prisma } from "generated/prisma/client";
 import MealPreferenceRepository from "./mealPreference.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
-import UserService from "../../user/user.service";
-import HostelRepository from "../../hostel/hostel.repository";
-import TenantRepository from "../../tenant/tenant.repository";
+import UserService from "../../userFeatures/user/user.service";
+import HostelRepository from "../../organizationFeatures/hostel/hostel.repository";
+import TenantRepository from "../../userFeatures/tenant/tenant.repository";
 import MealPackRepository from "../mealPack/mealPack.repository";
 import MealTypeRepository from "../mealType/mealType.repository";
 

@@ -6,9 +6,9 @@ import type {
 } from "./mealPack.validator";
 import { Prisma } from "generated/prisma/client";
 import MealPackRepository from "./mealPack.repository";
-import HostelRepository from "../../hostel/hostel.repository";
+import HostelRepository from "../../organizationFeatures/hostel/hostel.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
-import UserService from "../../user/user.service";
+import UserService from "../../userFeatures/user/user.service";
 
 export default class MealPackService {
   mealPackRepository;

@@ -8,8 +8,8 @@ import { Prisma } from "generated/prisma/client";
 import RoomTypeRepository from "./roomType.repository";
 import HostelRepository from "../hostel/hostel.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
-import AdminRepository from "../admin/admin.repositoty";
-import UserService from "../user/user.service";
+import AdminRepository from "../../userFeatures/admin/admin.repositoty";
+import UserService from "../../userFeatures/user/user.service";
 
 export default class RoomTypeService {
   roomTypeRepository;

@@ -10,8 +10,8 @@ import { ApplicationError } from "@/middleware/errorHandler";
 import { shortSlug, timeSuffix } from "@/utility/misc";
 import type { Prisma } from "generated/prisma/browser";
 import type { CurrentUser } from "@/types/express";
-import UserRepository from "../user/user.repository";
-import WardenRepository from "../warden/warden.repository";
+import UserRepository from "../../userFeatures/user/user.repository";
+import WardenRepository from "../../userFeatures/warden/warden.repository";
 
 export default class HostelService {
   hostelRepository;

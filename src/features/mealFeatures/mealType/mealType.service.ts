@@ -6,9 +6,9 @@ import type {
 } from "./mealType.validator";
 import { Prisma } from "generated/prisma/client";
 import MealTypeRepository from "./mealType.repository";
-import HostelRepository from "../../hostel/hostel.repository";
+import HostelRepository from "../../organizationFeatures/hostel/hostel.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
-import UserService from "../../user/user.service";
+import UserService from "../../userFeatures/user/user.service";
 
 export default class MealTypeService {
   mealTypeRepository;
@@ -57,7 +57,7 @@ export default class MealTypeService {
       }),
     };
 
-    const mealTypes = await this.mealTypeRepository.getMealTypes({filters});
+    const mealTypes = await this.mealTypeRepository.getMealTypes({ filters });
 
     return mealTypes;
   }

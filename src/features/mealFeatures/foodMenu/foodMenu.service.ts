@@ -3,8 +3,8 @@ import type { CreateFoodMenu, FoodMenuQueries } from "./foodMenu.validator";
 import { Prisma } from "generated/prisma/client";
 import FoodMenuRepository from "./foodMenu.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
-import UserService from "../../user/user.service";
-import HostelRepository from "../../hostel/hostel.repository";
+import UserService from "../../userFeatures/user/user.service";
+import HostelRepository from "../../organizationFeatures/hostel/hostel.repository";
 import MealTypeRepository from "../mealType/mealType.repository";
 import MenuPresetRepository from "../menuPreset/menuPreset.repository";
 import type { JsonValue } from "@prisma/client/runtime/client";
@@ -98,7 +98,6 @@ export default class FoodMenuService {
     });
 
     return foodMenu;
-
   }
 
   // async deleteFoodMenu(foodMenuId: number, currentUser: CurrentUser) {

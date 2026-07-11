@@ -8,7 +8,7 @@ import RoomTypeRepository from "../roomType/roomType.repository";
 import { prisma } from "@/lib/prisma";
 import BedRepository from "../bed/bed.repository";
 import type { UpdatePayload } from "../roomType/roomType.validator";
-import UserService from "../user/user.service";
+import UserService from "../../userFeatures/user/user.service";
 
 export default class RoomService {
   roomRepository;
@@ -154,8 +154,6 @@ export default class RoomService {
         room.hostelId,
         currentUser.userId,
       );
-
-    
     }
 
     const updatedRoom = await this.roomRepository.updateRoom(roomId, {
