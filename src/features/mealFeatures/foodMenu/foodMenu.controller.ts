@@ -1,6 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import {
   createFoodMenu,
+  foodMenuQueries,
+  updateFoodMenu,
 
   // updateFoodMenu,
 } from "./foodMenu.validator";
@@ -15,25 +17,25 @@ export default class FoodMenuController {
   }
 
   // get food menus
-  // async getFoodMenus(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     // const queries = foodMenuQueries.parse(req.query);
-  //     const currentUser = req.session.user;
+  async getFoodMenus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const queries = foodMenuQueries.parse(req.query);
+      const currentUser = req.session.user;
 
-  //     if (!currentUser) {
-  //       throw new ApplicationError("User not found", 404);
-  //     }
+      if (!currentUser) {
+        throw new ApplicationError("User not found", 404);
+      }
 
-  //     const foodMenus = await this.foodMenuService.getFoodMenus(
-  //       // queries,
-  //       currentUser,
-  //     );
+      const foodMenus = await this.foodMenuService.getFoodMenus(
+        queries,
+        currentUser,
+      );
 
-  //     return res.status(200).json({ data: foodMenus });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+      return res.status(200).json({ data: foodMenus });
+    } catch (error) {
+      next(error);
+    }
+  }
 
   // create food menu
   async createFoodMenu(req: Request, res: Response, next: NextFunction) {
@@ -60,60 +62,60 @@ export default class FoodMenuController {
   }
 
   // update food menu
-  // async updateFoodMenu(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const foodMenuId = Number(req.params.foodMenuId);
-  //     const currentUser = req.session.user;
-  //     const payload = updateFoodMenu.parse(req.body);
+  async updateFoodMenu(req: Request, res: Response, next: NextFunction) {
+    try {
+      const foodMenuId = Number(req.params.foodMenuId);
+      const currentUser = req.session.user;
+      const payload = updateFoodMenu.parse(req.body);
 
-  //     if (!foodMenuId) {
-  //       throw new ApplicationError("Food menu id is required", 400);
-  //     }
+      if (!foodMenuId) {
+        throw new ApplicationError("Food menu id is required", 400);
+      }
 
-  //     if (!currentUser) {
-  //       throw new ApplicationError("User not found", 404);
-  //     }
+      if (!currentUser) {
+        throw new ApplicationError("User not found", 404);
+      }
 
-  //     const foodMenu = await this.foodMenuService.updateFoodMenu(
-  //       foodMenuId,
-  //       currentUser,
-  //       payload,
-  //     );
+      // const foodMenu = await this.foodMenuService.updateFoodMenu(
+      //   foodMenuId,
+      //   currentUser,
+      //   payload,
+      // );
 
-  //     return res.status(200).json({
-  //       message: "Food menu updated successfully",
-  //       data: foodMenu,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+      return res.status(200).json({
+        message: "Food menu updated successfully",
+        // data: foodMenu,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 
   // delete food menu
-  // async deleteFoodMenu(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const foodMenuId = Number(req.params.foodMenuId);
-  //     const currentUser = req.session.user;
+  async deleteFoodMenu(req: Request, res: Response, next: NextFunction) {
+    try {
+      const foodMenuId = Number(req.params.foodMenuId);
+      const currentUser = req.session.user;
 
-  //     if (!foodMenuId) {
-  //       throw new ApplicationError("Food menu id is required", 400);
-  //     }
+      if (!foodMenuId) {
+        throw new ApplicationError("Food menu id is required", 400);
+      }
 
-  //     if (!currentUser) {
-  //       throw new ApplicationError("User not found", 404);
-  //     }
+      if (!currentUser) {
+        throw new ApplicationError("User not found", 404);
+      }
 
-  //     const foodMenu = await this.foodMenuService.deleteFoodMenu(
-  //       foodMenuId,
-  //       currentUser,
-  //     );
+      const foodMenu = await this.foodMenuService.deleteFoodMenu(
+        foodMenuId,
+        currentUser,
+      );
 
-  //     return res.status(200).json({
-  //       message: "Food menu deleted successfully",
-  //       data: foodMenu,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+      return res.status(200).json({
+        message: "Food menu deleted successfully",
+        data: foodMenu,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

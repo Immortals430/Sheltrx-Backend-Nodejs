@@ -12,13 +12,13 @@ foodMenuRouter.post(
   (req, res, next) => foodMenuController.createFoodMenu(req, res, next),
 );
 
-// foodMenuRouter.get(
-//   "/",
-//   auth,
-//   allowRoles(["tenant"]),
-//   (req, res, next) =>
-//     foodMenuController.getFoodMenus(req, res, next),
-// );
+foodMenuRouter.get(
+  "/",
+  auth,
+  allowRoles(["superadmin", "admin"]),
+  (req, res, next) =>
+    foodMenuController.getFoodMenus(req, res, next),
+);
 
 // foodMenuRouter.patch(
 //   "/:foodMenuId",
@@ -28,12 +28,12 @@ foodMenuRouter.post(
 //     foodMenuController.updateFoodMenu(req, res, next),
 // );
 
-// foodMenuRouter.delete(
-//   "/:foodMenuId",
-//   auth,
-//   allowRoles(["superadmin", "admin"]),
-//   (req, res, next) =>
-//     foodMenuController.deleteFoodMenu(req, res, next),
-// );
+foodMenuRouter.delete(
+  "/:foodMenuId",
+  auth,
+  allowRoles(["superadmin", "admin"]),
+  (req, res, next) =>
+    foodMenuController.deleteFoodMenu(req, res, next),
+);
 
 export default foodMenuRouter;

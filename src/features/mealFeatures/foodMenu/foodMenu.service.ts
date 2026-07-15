@@ -24,22 +24,17 @@ export default class FoodMenuService {
     this.menuPresetRepository = new MenuPresetRepository();
   }
 
-  // async getFoodMenus(currentUser: CurrentUser) {
-  //   const mealType = await this.mealTypeRepository.getMealTypes({
-  //     mealPack: {
-  //       some: {
-  //         foodMenu: {
-  //           some: {
-  //             tenantId: currentUser.userId,
-  //           },
-  //         },
-  //       },
-  //     },
-  //     isActive: true,
-  //   });
+  async getFoodMenus(queries: FoodMenuQueries, currentUser: CurrentUser) {
+    const filters: Prisma.MealTypeWhereInput = {
+      // ...(currentUser.role === "admin" && )
+    };
 
-  //   return mealType;
-  // }
+    const mealType = await this.mealTypeRepository.getMealTypes({
+      filters,
+    });
+
+    return mealType;
+  }
 
   async createFoodMenu(payload: CreateFoodMenu, currentUser: CurrentUser) {
     const hostel = await this.hostelRepository.getHostelDetail(
@@ -100,21 +95,34 @@ export default class FoodMenuService {
     return foodMenu;
   }
 
-  // async deleteFoodMenu(foodMenuId: number, currentUser: CurrentUser) {
-  //   const foodMenu = await this.foodMenuRepository.getFoodMenuDetail(foodMenuId);
 
-  //   if (!foodMenu) throw new ApplicationError("Food menu not found", 404);
 
-  //   if (currentUser.role === "admin") {
-  //     await this.userService.validateHostelAccessForAdmin(
-  //       foodMenu.hostelId,
-  //       currentUser.userId,
-  //     );
-  //   }
 
-  //   const deletedFoodMenu =
-  //     await this.foodMenuRepository.deleteFoodMenu(foodMenuId);
 
-  //   return deletedFoodMenu;
-  // }
+
+
+
+
+
+  
+
+  async deleteFoodMenu(foodMenuId: number, currentUser: CurrentUser) {
+    const foodMenu = await this.foodMenuRepository.getFoodMenuDetail({
+      foodMenuId,
+    });
+
+    if (!foodMenu) throw new ApplicationError("Food menu not found", 404);
+
+    if (currentUser.role === "admin") {
+      await this.userService.validateHostelAccessForAdmin(
+        foodMenu.hostelId,
+        currentUser.userId,
+      );
+    }
+
+    const deletedFoodMenu =
+      await this.foodMenuRepository.deleteFoodMenu(foodMenuId);
+
+    return deletedFoodMenu;
+  }
 }

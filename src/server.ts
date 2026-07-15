@@ -1,13 +1,18 @@
-import { app } from "./index.js";
+import "dotenv/config";
+import app from "./index.js";
+import http from "http";
 import { connectRedis } from "@/lib/redis.js";
+import { initializeSocket } from "./socket.js";
 const PORT = Number(process.env.PORT) || 8000;
 
-const server = async () => {
-  await connectRedis();
+const server = http.createServer(app);
 
-  app.listen(PORT, () => {
+const kaaBoom = async () => {
+  await connectRedis();
+  initializeSocket(server);
+  server.listen(PORT, () => {
     console.log(`Connceted to Express Server`);
   });
 };
 
-export default server;
+kaaBoom();

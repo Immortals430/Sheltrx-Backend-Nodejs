@@ -1,4 +1,4 @@
-import redisClient from "@/lib/redis.js";
+import {redisClient} from "@/lib/redis.js";
 
 
 export default class AuthCacheRepository {

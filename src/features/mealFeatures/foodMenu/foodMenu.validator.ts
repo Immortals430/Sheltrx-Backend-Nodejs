@@ -5,28 +5,28 @@ export const foodMenuQueries = z.object({
   // limit: z.coerce.number().optional().default(10),
   // hostelId: z.coerce.number().optional(),
   // mealTypeId: z.coerce.number().optional(),
-  // date: z.coerce.date().optional(),
+  date: z.coerce.date(),
 });
 
 export const createFoodMenu = z.object({
   hostelId: z.coerce.number(),
   mealTypeId: z.coerce.number(),
   menuPresetId: z.coerce.number().optional(),
-  customFoodItem: z.object({
-    veg: z.array(z.string().trim()),
-    nonVeg: z.array(z.string().trim()),
-  }).optional(),
+  customFoodItem: z
+    .object({
+      veg: z.array(z.string().trim()),
+      nonVeg: z.array(z.string().trim()),
+    })
+    .optional(),
   date: z.coerce.date(),
 });
 
 export const updateFoodMenu = z.object({
-  // hostelId: z.coerce.number(),
-  // mealTypeId: z.coerce.number(),
-  // foodItem: z.object({
-  //   veg: z.array(z.string().trim()),
-  //   nonVeg: z.array(z.string().trim()),
-  // }),
-  // date: z.coerce.date(),
+  mealTypeId: z.coerce.number(),
+  foodItem: z.object({
+    veg: z.array(z.string().trim()),
+    nonVeg: z.array(z.string().trim()),
+  }),
 });
 
 export type CreateFoodMenu = z.infer<typeof createFoodMenu>;

@@ -34,14 +34,22 @@ export default class FoodMenuRepository {
   //   });
   // }
 
-  // // get food menu detail
+  async getFoodMenuDetail({ foodMenuId }: { foodMenuId: number }) {
+    return await prisma.foodMenu.findUnique({
+      where: {
+        id: foodMenuId,
+      },
+    });
+  }
+
+  // get food menu detail
   async getExisitingFoodMenuDetail(mealTypeId: number, date: Date) {
     const startDate = new Date(date);
     startDate.setUTCHours(0, 0, 0, 0);
 
     const endDate = new Date(startDate);
     endDate.setUTCDate(endDate.getUTCDate() + 1);
-    
+
     return await prisma.foodMenu.findFirst({
       where: {
         mealTypeId,
@@ -66,9 +74,9 @@ export default class FoodMenuRepository {
   }
 
   // delete food menu
-  // async deleteFoodMenu(foodMenuId: number) {
-  //   return await prisma.foodMenu.delete({
-  //     where: { id: foodMenuId },
-  //   });
-  // }
+  async deleteFoodMenu(foodMenuId: number) {
+    return await prisma.foodMenu.delete({
+      where: { id: foodMenuId },
+    });
+  }
 }

@@ -1,9 +1,9 @@
 import { createClient } from "redis";
 
-export const redisClient = createClient(
+ const redisClient = createClient(
   process.env.REDIS_URL
     ? {
-      url: process.env.REDIS_URL,
+        url: process.env.REDIS_URL,
       }
     : {
         socket: {
@@ -13,15 +13,30 @@ export const redisClient = createClient(
       },
 );
 
+ const pubClient = redisClient.duplicate();
+ const subClient = redisClient.duplicate();
+
 redisClient.on("error", (err) => {
   console.error("Redis Error:", err);
 });
 
+subClient.on("error", (err) => {
+  console.error("Redis Sub Error:", err);
+});
+
 export const connectRedis = async () => {
   if (!redisClient.isOpen) {
-    await redisClient.connect();
+    await Promise.all([
+      redisClient.connect(),
+      pubClient.connect(),
+      subClient.connect(),
+    ]);
     console.log("Connected to Redis Server");
   }
 };
 
-export default redisClient;
+export {
+  redisClient,
+  pubClient,
+  subClient
+}

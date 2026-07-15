@@ -1,10 +1,10 @@
+import "dotenv/config";
 import express from "express";
 import session from "express-session";
-import server from "./server.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { RedisStore } from "connect-redis";
-import redisClient from "./lib/redis.js";
+import {redisClient} from "./lib/redis.js";
 import errorhandler from "./middleware/errorHandler.js";
 import authRouter from "./features/auth/auth.routes.js";
 import institutionRouter from "./features/organizationFeatures/instittution/institution.routes.js";
@@ -23,7 +23,7 @@ import mealPreferenceRouter from "./features/mealFeatures/mealPreference/mealPre
 import menuPresetRouter from "./features/mealFeatures/menuPreset/menuPreset.routes.js";
 import foodMenuRouter from "./features/mealFeatures/foodMenu/foodMenu.routes.js";
 
-export const app = express();
+const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 
 app.use(
@@ -70,4 +70,4 @@ app.use("/api/v1/meal-preference", mealPreferenceRouter);
 
 app.use(errorhandler);
 
-server();
+export default app
