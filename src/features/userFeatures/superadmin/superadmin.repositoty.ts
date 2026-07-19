@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import type { Prisma } from "@prisma/client/extension";
 
 export default class SuperAdminRepository {

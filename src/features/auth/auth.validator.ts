@@ -61,48 +61,53 @@ export const signup = z
     localGuardianName: z.string().trim().optional(),
     localGuardianPhone: z.string().trim().optional(),
     localGuardianRelation: z.string().trim().optional(),
-    joiningDate: z.iso.date().optional(),
-    expectedExitDate: z.iso.date().optional(),
+    joiningDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
+    expectedExitDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
+      .optional(),
   })
   .superRefine((data, ctx) => {
-  if (data.role === Role.staff && !data.roleType) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["roleType"],
-      message: "roleType is required",
-    });
-  }
-
-  if (data.role === Role.tenant) {
-    // if (!data.joiningDate) {
-    //   ctx.addIssue({
-    //     code: "custom",
-    //     path: ["joiningDate"],
-    //     message: "Joining date is required",
-    //   });
-    // }
-
-    // if (!data.expectedExitDate) {
-    //   ctx.addIssue({
-    //     code: "custom",
-    //     path: ["expectedExitDate"],
-    //     message: "Expected exit date is required",
-    //   });
-    // }
-
-    if (
-      data.joiningDate &&
-      data.expectedExitDate &&
-      data.joiningDate > data.expectedExitDate
-    ) {
+    if (data.role === Role.staff && !data.roleType) {
       ctx.addIssue({
         code: "custom",
-        path: ["expectedExitDate"],
-        message: "Expected exit date must be after joining date",
+        path: ["roleType"],
+        message: "roleType is required",
       });
     }
-  }
-});
+
+    if (data.role === Role.tenant) {
+      // if (!data.joiningDate) {
+      //   ctx.addIssue({
+      //     code: "custom",
+      //     path: ["joiningDate"],
+      //     message: "Joining date is required",
+      //   });
+      // }
+
+      // if (!data.expectedExitDate) {
+      //   ctx.addIssue({
+      //     code: "custom",
+      //     path: ["expectedExitDate"],
+      //     message: "Expected exit date is required",
+      //   });
+      // }
+
+      if (
+        data.joiningDate &&
+        data.expectedExitDate &&
+        data.joiningDate > data.expectedExitDate
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["expectedExitDate"],
+          message: "Expected exit date must be after joining date",
+        });
+      }
+    }
+  });
 
 export const superAdmin = z.object({
   username: z.string().trim().nonempty("Full name is required"),

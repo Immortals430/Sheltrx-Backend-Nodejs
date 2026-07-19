@@ -1,10 +1,18 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
+import { UTCISOToYYYYMMDD, YYYYMMDDToUTCISO } from "@/lib/dateTime";
 import type { Prisma } from "generated/prisma/client";
 
 interface CreatePayload {
   hostelId: number;
   mealTypeId: number;
-  date: Date;
+  date: string;
+  foodItem: {
+    veg: string[];
+    nonVeg: string[];
+  };
+}
+
+interface UpdatePayload {
   foodItem: {
     veg: string[];
     nonVeg: string[];
@@ -12,28 +20,7 @@ interface CreatePayload {
 }
 
 export default class FoodMenuRepository {
-  // get food menus
-  // async getFoodMenus(
-  //   filters: Prisma.FoodMenuWhereInput,
-  //   skip: number = 0,
-  //   limit: number = 10,
-  //   sortBy: "date" | "createdAt" = "date",
-  //   sortOrder: "asc" | "desc" = "desc",
-  // ) {
-  //   return await prisma.foodMenu.findMany({
-  //     where: filters,
-  //     skip,
-  //     take: limit,
-  //     orderBy: {
-  //       [sortBy]: sortOrder,
-  //     },
-  //     include: {
-  //       mealType: true,
-  //       hostel: true,
-  //     },
-  //   });
-  // }
-
+  // get food menu detail
   async getFoodMenuDetail({ foodMenuId }: { foodMenuId: number }) {
     return await prisma.foodMenu.findUnique({
       where: {
@@ -43,33 +30,42 @@ export default class FoodMenuRepository {
   }
 
   // get food menu detail
-  async getExisitingFoodMenuDetail(mealTypeId: number, date: Date) {
-    const startDate = new Date(date);
-    startDate.setUTCHours(0, 0, 0, 0);
-
-    const endDate = new Date(startDate);
-    endDate.setUTCDate(endDate.getUTCDate() + 1);
-
-    return await prisma.foodMenu.findFirst({
+  async getExisitingFoodMenuDetail(mealTypeId: number, date: string) {
+    const existingFoodMenu = await prisma.foodMenu.findFirst({
       where: {
         mealTypeId,
-        date: {
-          gte: startDate,
-          lt: endDate,
-        },
+        date: YYYYMMDDToUTCISO(date),
       },
     });
+    if (!existingFoodMenu) return null;
+    return {
+      ...existingFoodMenu,
+      date: UTCISOToYYYYMMDD(existingFoodMenu.date),
+    };
   }
 
   // create food menu
   async createFoodMenu(payload: CreatePayload) {
-    return await prisma.foodMenu.create({
+    const foodMenu = await prisma.foodMenu.create({
       data: {
         hostelId: payload.hostelId,
         mealTypeId: payload.mealTypeId,
         foodItem: payload.foodItem,
-        date: payload.date,
+        date: YYYYMMDDToUTCISO(payload.date),
       },
+    });
+
+    return {
+      ...foodMenu,
+      date: UTCISOToYYYYMMDD(foodMenu.date),
+    };
+  }
+
+  // create food menu
+  async updateFoodMenu(foodMenuId: number, payload: UpdatePayload) {
+    return await prisma.foodMenu.update({
+      where: { id: foodMenuId },
+      data: payload,
     });
   }
 

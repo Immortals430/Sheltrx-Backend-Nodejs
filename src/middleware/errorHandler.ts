@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { Prisma } from "generated/prisma/client";
 import { ZodError } from "zod";
 
 export class ApplicationError extends Error {
@@ -15,11 +16,7 @@ const errorhandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  // mongoose validation error
-  //   if (err instanceof mongoose.Error.ValidationError) {
-  //     console.log("mongoose class error", err);
-  //     return res.status(400).send(err.message);
-  //   }
+
 
   // zod form validation error
   if (err instanceof ZodError) {

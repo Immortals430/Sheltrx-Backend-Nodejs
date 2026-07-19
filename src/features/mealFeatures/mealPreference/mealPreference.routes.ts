@@ -21,20 +21,14 @@ mealPreferenceRouter.get(
     mealPreferenceController.getMealPreferences(req, res, next),
 );
 
-// mealPreferenceRouter.patch(
-//   "/:mealPreferenceId",
-//   auth,
-//   allowRoles(["superadmin", "admin"]),
-//   (req, res, next) =>
-//     mealPreferenceController.updateMealPreference(req, res, next),
-// );
-
-mealPreferenceRouter.delete(
-  "/:mealPreferenceId",
+mealPreferenceRouter.patch(
+  "/",
   auth,
   allowRoles(["superadmin", "admin"]),
   (req, res, next) =>
-    mealPreferenceController.deleteMealPreference(req, res, next),
+    mealPreferenceController.updateMealPreference(req, res, next),
 );
+
+
 
 export default mealPreferenceRouter;

@@ -11,20 +11,22 @@ model Hostel {
   contactPhone     String?
   totalFloors      String?          @default("1")
   flag             Boolean          @default(false)
+  timeZone         String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  campus Campus   @relation(fields: [campusId], references: [id], onDelete: Cascade)
-  tenant Tenant[]
-  staff  Staff[]  @relation("HostelToStaff")
-  warden Warden[] @relation("HostelToWarden")
-  room   Room[]
-  roomType RoomType[]
-  mealType MealType[]
-  mealPack MealPack[]
+  campus     Campus       @relation(fields: [campusId], references: [id], onDelete: Cascade)
+  tenant     Tenant[]
+  staff      Staff[]      @relation("HostelToStaff")
+  warden     Warden[]     @relation("HostelToWarden")
+  room       Room[]
+  roomType   RoomType[]
+  mealType   MealType[]
+  mealPack   MealPack[]
   menuPreset MenuPreset[]
-  foodMenu FoodMenu[]
+  foodMenu   FoodMenu[]
+  qrCode     QrCode?
 }
 
 enum HostelType {

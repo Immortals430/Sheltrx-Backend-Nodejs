@@ -7,7 +7,7 @@ import type {
 } from "./hostel.validatior";
 import CampusRepository from "../campus/campus.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
-import { shortSlug, timeSuffix } from "@/utility/misc";
+import { shortSlug, timeSuffix } from "@/lib/misc";
 import type { Prisma } from "generated/prisma/browser";
 import type { CurrentUser } from "@/types/express";
 import UserRepository from "../../userFeatures/user/user.repository";
@@ -120,6 +120,7 @@ export default class HostelService {
       contactEmail: payload.contactEmail,
       contactPhone: payload.contactPhone,
       totalFloors: payload.totalFloors,
+      timeZone: payload.timeZone,
     });
     return hostel;
   }
@@ -163,6 +164,10 @@ export default class HostelService {
 
       ...(payload.totalFloors !== undefined && {
         totalFloors: payload.totalFloors,
+      }),
+
+      ...(payload.timeZone !== undefined && {
+        timeZone: payload.timeZone,
       }),
     });
     return hostel;

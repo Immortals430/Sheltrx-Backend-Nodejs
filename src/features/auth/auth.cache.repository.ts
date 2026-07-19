@@ -1,5 +1,4 @@
-import {redisClient} from "@/lib/redis.js";
-
+import { redisClient } from "@/config/redis.js";
 
 export default class AuthCacheRepository {
   // otp

@@ -4,7 +4,7 @@ model FoodMenu {
     mealTypeId Int
 
     foodItem Json
-    date     DateTime  
+    date     DateTime @db.Date  
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

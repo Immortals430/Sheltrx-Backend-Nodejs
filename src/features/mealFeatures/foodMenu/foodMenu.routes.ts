@@ -20,13 +20,13 @@ foodMenuRouter.get(
     foodMenuController.getFoodMenus(req, res, next),
 );
 
-// foodMenuRouter.patch(
-//   "/:foodMenuId",
-//   auth,
-//   allowRoles(["superadmin", "admin"]),
-//   (req, res, next) =>
-//     foodMenuController.updateFoodMenu(req, res, next),
-// );
+foodMenuRouter.patch(
+  "/:foodMenuId",
+  auth,
+  allowRoles(["superadmin", "admin"]),
+  (req, res, next) =>
+    foodMenuController.updateFoodMenu(req, res, next),
+);
 
 foodMenuRouter.delete(
   "/:foodMenuId",

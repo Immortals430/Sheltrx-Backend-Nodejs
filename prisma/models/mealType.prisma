@@ -3,15 +3,16 @@ model MealType {
     hostelId Int
 
     mealTypeName String
-    startTime    String
-    endTime      String
-    isActive     Boolean  @default(true)
-    deletedAt    DateTime? 
+    startTime    DateTime @db.Time
+    endTime      DateTime @db.Time
+    isActive     Boolean   @default(true)
+    deletedAt    DateTime?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    hostel   Hostel     @relation(fields: [hostelId], references: [id], onDelete: Cascade)
-    mealPack MealPack[]
-    foodMenu FoodMenu[]
+    hostel      Hostel       @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+    mealPack    MealPack[]
+    foodMenu    FoodMenu[]
+    mealOptOuts MealOptOut[]
 }

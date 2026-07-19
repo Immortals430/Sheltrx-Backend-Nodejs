@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import type { Prisma, DayCategory, FoodPlan } from "generated/prisma/client";
 
 interface CreatePayload {
@@ -7,47 +7,24 @@ interface CreatePayload {
   foodPlan: FoodPlan[];
   allergies?: string | undefined;
   // dayCategory: DayCategory;
-  // isActive?: boolean;
 }
 
 interface UpdatePayload {
-  mealPackIds?: number[];
-  dayCategory?: DayCategory;
-  isActive?: boolean;
+  foodPlan?: FoodPlan[];
+  allergies?: string;
 }
 
 export default class MealPreferenceRepository {
-//   async getMealPreferences(
-//     filters: Prisma.MealPreferenceWhereInput,
-//     skip: number = 0,
-//     limit: number = 10,
-//     sortBy: "createdAt" = "createdAt",
-//     sortOrder: "asc" | "desc" = "desc",
-//   ) {
-//     return await prisma.mealPreference.findMany({
-//       where: filters,
-//       skip,
-//       take: limit,
-//       orderBy: {
-//         [sortBy]: sortOrder,
-//       },
-//       include: {
-//         tenant: true,
-//         mealPack: true,
-//       },
-//     });
-//   }
-
   // get meal preference detail
   async getMealPreferenceDetail(
-    filter: Prisma.MealPreferenceWhereUniqueInput,
+    tenantId: number,
     include: Prisma.MealPreferenceInclude | null = null,
     omit: Prisma.MealPreferenceOmit | null = null,
   ) {
     return await prisma.mealPreference.findUnique({
-      where: filter,
-      include,
-      omit,
+      where: { tenantId },
+      include: include,
+      omit: omit,
     });
   }
 
@@ -66,21 +43,25 @@ export default class MealPreferenceRepository {
   }
 
   // update meal preference
-  // async updateMealPreference(mealPreferenceId: number, data: UpdatePayload) {
-  //   return await prisma.mealPreference.update({
-  //     where: { id: mealPreferenceId },
-  //     data,
-  //     include: {
-  //       tenant: true,
-  //       mealPack: true,
-  //     },
-  //   });
-  // }
-
-  // delete meal preference
-  async deleteMealPreference(mealPreferenceId: number) {
-    return await prisma.mealPreference.delete({
-      where: { id: mealPreferenceId },
+  async updateMealPreference(
+    tenantId: number,
+    data?: UpdatePayload,
+    mealPackIds?: number[],
+  ) {
+    return await prisma.mealPreference.update({
+      where: { tenantId },
+      data: {
+        ...data,
+        ...(mealPackIds && {
+          mealPack: {
+            set: mealPackIds.map((id) => ({ id })),
+          },
+        }),
+      },
+      include: {
+        tenant: true,
+        mealPack: true,
+      },
     });
   }
 }

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma.js";
+import { prisma } from "@/config/prisma.js";
 import type { Role } from "generated/prisma/enums.js";
 import type { Prisma } from "@prisma/client/extension";
 

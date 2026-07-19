@@ -29,4 +29,4 @@ export const updateRoomType = z.object({
 });
 
 export type CreateRoomType = z.infer<typeof createRoomType>;
-export type UpdatePayload = z.infer<typeof updateRoomType>;
+export type UpdateRoomType = z.infer<typeof updateRoomType>;

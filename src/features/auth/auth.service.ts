@@ -1,14 +1,12 @@
 import type { Login, Signup, SuperAdmin } from "./auth.validator.js";
 import UserRepository from "../userFeatures/user/user.repository.js";
 import { ApplicationError } from "@/middleware/errorHandler.js";
-import { comparePassword, hashPassword } from "@/utility/bcrypt.js";
+
 import AuthCacheRepository from "./auth.cache.repository.js";
-import { prisma } from "@/lib/prisma.js";
+import { prisma } from "@/config/prisma.js";
 import AdminRepository from "../userFeatures/admin/admin.repositoty.js";
-import { isEmail } from "@/utility/emailValidator.js";
+import { isEmail } from "@/lib/emailValidator.js";
 import SuperAdminRepository from "../userFeatures/superadmin/superadmin.repositoty.js";
-// import type { CreateUser } from "../user/user.validator.js";
-// import type { CreateAdmin } from "../admin/admin.validator.js";
 import AadhaarRepository from "../aadhaar/aadhaar.repository.js";
 import WardenRepository from "../userFeatures/warden/warden.repository.js";
 import StaffRepository from "../userFeatures/staff/staff.repository.js";

@@ -3,9 +3,11 @@ import { z } from "zod";
 export const foodMenuQueries = z.object({
   // page: z.coerce.number().optional().default(1),
   // limit: z.coerce.number().optional().default(10),
-  // hostelId: z.coerce.number().optional(),
+  hostelId: z.coerce.number(),
   // mealTypeId: z.coerce.number().optional(),
-  date: z.coerce.date(),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
 });
 
 export const createFoodMenu = z.object({
@@ -18,15 +20,19 @@ export const createFoodMenu = z.object({
       nonVeg: z.array(z.string().trim()),
     })
     .optional(),
-  date: z.coerce.date(),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
 });
 
 export const updateFoodMenu = z.object({
-  mealTypeId: z.coerce.number(),
-  foodItem: z.object({
-    veg: z.array(z.string().trim()),
-    nonVeg: z.array(z.string().trim()),
-  }),
+  menuPresetId: z.coerce.number().optional(),
+  customFoodItem: z
+    .object({
+      veg: z.array(z.string().trim()),
+      nonVeg: z.array(z.string().trim()),
+    })
+    .optional(),
 });
 
 export type CreateFoodMenu = z.infer<typeof createFoodMenu>;

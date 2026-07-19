@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import type { Prisma } from "generated/prisma/client";
 
 interface CreatePayload {
@@ -18,7 +18,7 @@ interface UpdatePayload {
   priceWithoutFood?: number;
   totalBeds?: number;
   isAc?: boolean;
-  comment?: string ;
+  comment?: string;
 }
 
 export default class RoomTypeRepository {

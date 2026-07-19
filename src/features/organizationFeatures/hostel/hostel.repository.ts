@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import type { Prisma } from "generated/prisma/browser";
 import type {
   HostelType,
@@ -19,7 +19,7 @@ interface CreatePayload {
   };
   hostelType: HostelType;
   organizationType: OrganizationType;
-  // totalRooms: string;
+  timeZone: string;
   totalFloors?: string | undefined;
   contactEmail?: string | undefined;
   contactPhone?: string | undefined;
@@ -37,7 +37,7 @@ interface UpdatePayload {
   };
   hostelType?: HostelType;
   organizationType?: OrganizationType;
-  // totalRooms: string;
+  timeZone?: string;
   totalFloors?: string;
   contactEmail?: string;
   contactPhone?: string;
@@ -115,7 +115,6 @@ export default class HostelRepository {
   //   });
   // }
 
-
   // create hostel
   async createHostel(campusId: number, payload: CreatePayload) {
     return prisma.hostel.create({
@@ -129,6 +128,7 @@ export default class HostelRepository {
         totalFloors: payload.totalFloors ?? null,
         contactEmail: payload.contactEmail ?? null,
         contactPhone: payload.contactPhone ?? null,
+        timeZone: payload.timeZone,
       },
     });
   }

@@ -1,7 +1,7 @@
 import http from "http";
 import { Server } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
-import { connectRedis, subClient, pubClient } from "./lib/redis.js";
+import { connectRedis, subClient, pubClient } from "./config/redis.js";
 
 export const initializeSocket = (server: http.Server) => {
   const io = new Server(server, {
@@ -9,7 +9,7 @@ export const initializeSocket = (server: http.Server) => {
       origin: "*",
       methods: ["GET", "POST"],
     },
-    // transports: ["websocket"],
+    transports: ["websocket"],
   });
 
   io.adapter(createAdapter(pubClient, subClient));
@@ -27,7 +27,6 @@ export const initializeSocket = (server: http.Server) => {
   //   }
   // });
 
-  
   io.on("connection", (socket) => {
     console.log("Adapter:", process.pid);
 

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import { AdminSubscriptionPlan, Prisma } from "generated/prisma/client";
 
 // import type { CreateAdmin } from "./admin.validator";

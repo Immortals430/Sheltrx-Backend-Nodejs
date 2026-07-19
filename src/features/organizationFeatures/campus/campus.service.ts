@@ -5,7 +5,7 @@ import type {
   UpdateCampus,
   AssignAdmin,
 } from "./campus.validatior";
-import { shortSlug, timeSuffix } from "@/utility/misc";
+import { shortSlug, timeSuffix } from "@/lib/misc";
 import InstitutionRepository from "../instittution/institution.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
 import type { Prisma } from "generated/prisma/browser";

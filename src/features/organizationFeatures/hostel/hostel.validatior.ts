@@ -19,12 +19,27 @@ export const createHostel = z.object({
   }),
   hostelType: z.enum(HostelType),
   organizationType: z.enum(OrganizationType),
-  // // totalRooms
-  // // adminName
-  // // adminUserId
   contactEmail: z.string().optional(),
   contactPhone: z.string().optional(),
   totalFloors: z.string().optional(),
+  timeZone: z
+    .string()
+    .refine(
+      (timezone) => {
+        try {
+          new Intl.DateTimeFormat("en-US", {
+            timeZone: timezone,
+          });
+          return true;
+        } catch (err) {
+          return false;
+        }
+      },
+      {
+        message: "Invalid timezone",
+      },
+    )
+    .nonempty("Timezone is required"),
 });
 
 export const updateHostel = z.object({
@@ -41,12 +56,27 @@ export const updateHostel = z.object({
     .optional(),
   hostelType: z.enum(HostelType).optional(),
   organizationType: z.enum(OrganizationType).optional(),
-  // // totalRooms
-  // // adminName
-  // // adminUserId
   contactEmail: z.string().optional(),
   contactPhone: z.string().optional(),
   totalFloors: z.string().optional(),
+  timeZone: z
+    .string()
+    .refine(
+      (timezone) => {
+        try {
+          new Intl.DateTimeFormat("en-US", {
+            timeZone: timezone,
+          });
+          return true;
+        } catch (err) {
+          return false;
+        }
+      },
+      {
+        message: "Invalid timezone",
+      },
+    )
+    .optional(),
 });
 
 export const hostelQueries = z.object({

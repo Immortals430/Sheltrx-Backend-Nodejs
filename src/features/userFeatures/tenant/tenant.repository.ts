@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
+import { UTCISOToYYYYMMDD, YYYYMMDDToUTCISO } from "@/lib/dateTime";
 import { Prisma } from "generated/prisma/browser";
 import type { Gender } from "generated/prisma/enums";
 
@@ -20,8 +21,13 @@ interface TenantDetail {
   localGuardianName: string | undefined;
   localGuardianPhone: string | undefined;
   localGuardianRelation: string | undefined;
-  joiningDate: string | undefined;
+  joiningDate: string;
   expectedExitDate: string | undefined;
+}
+
+interface GetDetailPayload {
+  filters: Prisma.TenantWhereUniqueInput;
+  include?: Prisma.TenantInclude | null;
 }
 export default class TenantRepository {
   async createTenant(
@@ -42,16 +48,24 @@ export default class TenantRepository {
         localGuardianName: tenantDetail.localGuardianName ?? null,
         localGuardianPhone: tenantDetail.localGuardianPhone ?? null,
         localGuardianRelation: tenantDetail.localGuardianRelation ?? null,
-        joiningDate:
-          tenantDetail.joiningDate ?? new Date().toISOString().slice(0, 10),
-        expectedExitDate: tenantDetail.expectedExitDate ?? null,
+        joiningDate: YYYYMMDDToUTCISO(tenantDetail.joiningDate),
+        expectedExitDate: YYYYMMDDToUTCISO(tenantDetail.expectedExitDate ?? ""),
       },
     });
   }
 
-  async getTenantDetail(tenantId: number) {
-    return prisma.tenant.findUnique({
-      where: { userId: tenantId },
+  async getTenantDetail({ filters , include = null }: GetDetailPayload) {
+    const tenant = await prisma.tenant.findUnique({
+      where: filters,
+      include,
     });
+
+    if (!tenant) return null;
+
+    return {
+      ...tenant,
+      joiningDate: UTCISOToYYYYMMDD(tenant.joiningDate),
+      expectedExitDate: UTCISOToYYYYMMDD(tenant.expectedExitDate),
+    };
   }
 }

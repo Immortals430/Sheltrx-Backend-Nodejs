@@ -2,10 +2,9 @@ import { DayCategory, FoodPlan } from "generated/prisma/enums";
 import { z } from "zod";
 
 export const mealPreferenceQueries = z.object({
-  //   mealPackId: z.coerce.number().optional(),
-  //   dayCategory: z.enum(DayCategory).optional(),
-  //   isActive: z.coerce.boolean().optional(),
-  date: z.coerce.date(),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
 });
 
 export const createMealPreference = z.object({
@@ -19,7 +18,8 @@ export const createMealPreference = z.object({
 });
 
 export const updateMealPreference = z.object({
-  mealPackIds: z.array(z.number()).min(1, "Minimum 1 item required").optional(),
+  tenantId: z.coerce.number(),
+  mealPackIds: z.array(z.number()).optional(),
   foodPlan: z
     .array(z.enum(FoodPlan))
     .min(1, "Minimum 1 item required")

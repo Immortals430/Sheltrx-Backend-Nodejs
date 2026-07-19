@@ -2,8 +2,8 @@ import { DayCategory, FoodPlan } from "generated/prisma/enums";
 import { z } from "zod";
 
 export const mealPackQueries = z.object({
-  page: z.coerce.number().optional().default(1),
-  limit: z.coerce.number().optional().default(10),
+  // page: z.coerce.number().optional().default(1),
+  // limit: z.coerce.number().optional().default(10),
   hostelId: z.coerce.number().optional(),
 });
 
@@ -15,7 +15,7 @@ export const createMealPack = z.object({
     .min(1)
     .max(100)
     .nonempty("Meal pack name is required"),
-  price: z.number().positive(),
+  price: z.number().min(0),
   foodPlan: z.array(z.enum(FoodPlan)).max(2, "Maximum 2 items allowed"),
   dayCategory: z.array(z.enum(DayCategory)).max(2, "Maximum 2 items allowed"),
   mealTypeIds: z.array(z.number()).min(1, "At least one meal type is required"),
@@ -23,7 +23,7 @@ export const createMealPack = z.object({
 
 export const updateMealPack = z.object({
   mealPackName: z.string().trim().min(1).max(100).optional(),
-  price: z.number().positive().optional(),
+  price: z.number().min(0).optional(),
   foodPlan: z
     .array(z.enum(FoodPlan))
     .max(2, "Maximum 2 items allowed")

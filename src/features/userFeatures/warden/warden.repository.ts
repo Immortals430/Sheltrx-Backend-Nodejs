@@ -1,7 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import { Prisma, type Gender } from "generated/prisma/browser";
-
-
 
 interface WardenDetail {
   gender: Gender;
@@ -22,7 +20,6 @@ interface WardenDetail {
 }
 
 export default class WardenRepository {
-
   async createWarden(
     userId: number,
     aadhaarId: number,

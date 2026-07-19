@@ -21,12 +21,7 @@ export default class MealPackService {
     this.userService = new UserService();
   }
 
-  async getMealPacks(
-    { page, limit, hostelId }: MealPackQueries,
-    currentUser: CurrentUser,
-  ) {
-    const skip = (page - 1) * limit;
-
+  async getMealPacks({ hostelId }: MealPackQueries, currentUser: CurrentUser) {
     let filters: Prisma.MealPackWhereInput = {
       ...(hostelId && { hostelId }),
 
@@ -43,11 +38,7 @@ export default class MealPackService {
       }),
     };
 
-    const mealPacks = await this.mealPackRepository.getMealPacks(
-      filters,
-      skip,
-      limit,
-    );
+    const mealPacks = await this.mealPackRepository.getMealPacks(filters);
 
     return mealPacks;
   }
@@ -100,7 +91,9 @@ export default class MealPackService {
           dayCategory: payload.dayCategory,
         }),
       },
-      payload.mealTypeIds,
+      payload.mealTypeIds !== undefined && payload.mealTypeIds.length > 0
+        ? payload.mealTypeIds
+        : undefined,
     );
 
     return updatedMealPack;

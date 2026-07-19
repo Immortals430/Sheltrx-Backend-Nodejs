@@ -1,6 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import type { Prisma } from "generated/prisma/client";
-
 
 interface CreatePayload {
   hostelId: number;

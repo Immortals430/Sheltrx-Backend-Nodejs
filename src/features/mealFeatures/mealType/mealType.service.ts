@@ -9,15 +9,24 @@ import MealTypeRepository from "./mealType.repository";
 import HostelRepository from "../../organizationFeatures/hostel/hostel.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
 import UserService from "../../userFeatures/user/user.service";
+import { HHMMSSToUTCISO, UTCISOToHHMMSS } from "@/lib/dateTime";
 
 export default class MealTypeService {
   mealTypeRepository;
   hostelRepository;
   userService;
+  omit: Prisma.MealTypeOmit;
   constructor() {
     this.mealTypeRepository = new MealTypeRepository();
     this.hostelRepository = new HostelRepository();
     this.userService = new UserService();
+
+    this.omit = {
+      createdAt: true,
+      updatedAt: true,
+      deletedAt: true,
+      isActive: true,
+    };
   }
 
   async getMealTypes({ hostelId }: MealTypeQueries, currentUser: CurrentUser) {
@@ -57,7 +66,10 @@ export default class MealTypeService {
       }),
     };
 
-    const mealTypes = await this.mealTypeRepository.getMealTypes({ filters });
+    const mealTypes = await this.mealTypeRepository.getMealTypes({
+      filters,
+      omit: this.omit,
+    });
 
     return mealTypes;
   }
@@ -75,7 +87,13 @@ export default class MealTypeService {
         currentUser.userId,
       );
     }
-    const mealType = await this.mealTypeRepository.createMealType(payload);
+
+    const mealType = await this.mealTypeRepository.createMealType({
+      hostelId: payload.hostelId,
+      mealTypeName: payload.mealTypeName,
+      startTime: payload.startTime,
+      endTime: payload.endTime,
+    });
 
     return mealType;
   }
@@ -85,8 +103,9 @@ export default class MealTypeService {
     currentUser: CurrentUser,
     payload: UpdateMealType,
   ) {
-    const mealType =
-      await this.mealTypeRepository.getMealTypeDetail(mealTypeId);
+    const mealType = await this.mealTypeRepository.getMealTypeDetail({
+      filters: { id: mealTypeId },
+    });
 
     if (!mealType) throw new ApplicationError("Meal type not found", 404);
 
@@ -94,6 +113,23 @@ export default class MealTypeService {
       await this.userService.validateHostelAccessForAdmin(
         mealType.hostelId,
         currentUser.userId,
+      );
+    }
+
+    if (
+      (payload.startTime &&
+        payload.endTime &&
+        payload.startTime >= payload.endTime) ||
+      (payload.startTime &&
+        !payload.endTime &&
+        mealType.endTime <= payload.startTime) ||
+      (payload.endTime &&
+        !payload.startTime &&
+        mealType.startTime >= payload.endTime)
+    ) {
+      throw new ApplicationError(
+        "End Time Should be greater than start time",
+        400,
       );
     }
 
@@ -116,8 +152,9 @@ export default class MealTypeService {
   }
 
   async deleteMealType(mealTypeId: number, currentUser: CurrentUser) {
-    const mealType =
-      await this.mealTypeRepository.getMealTypeDetail(mealTypeId);
+    const mealType = await this.mealTypeRepository.getMealTypeDetail({
+      filters: { id: mealTypeId },
+    });
 
     if (!mealType) throw new ApplicationError("Meal type not found", 404);
 

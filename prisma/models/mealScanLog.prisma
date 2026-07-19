@@ -1,0 +1,11 @@
+model MealScanLog {
+    id Int @id @default(autoincrement())
+
+    tenantId Int
+    hostelId Int
+    mealTypeId Int
+    scanDate DateTime  @db.Date
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

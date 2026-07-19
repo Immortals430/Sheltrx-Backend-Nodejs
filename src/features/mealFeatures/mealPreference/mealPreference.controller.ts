@@ -62,60 +62,28 @@ export default class MealPreferenceController {
   }
 
   // update meal preference
-  // async updateMealPreference(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const mealPreferenceId = Number(req.params.mealPreferenceId);
-  //     const currentUser = req.session.user;
-  //     const payload = updateMealPreference.parse(req.body);
-
-  //     if (!mealPreferenceId) {
-  //       throw new ApplicationError("Meal preference id is required", 400);
-  //     }
-
-  //     if (!currentUser) {
-  //       throw new ApplicationError("User not found", 404);
-  //     }
-
-  //     const mealPreference = await this.mealPreferenceService.updateMealPreference(
-  //       mealPreferenceId,
-  //       currentUser,
-  //       payload,
-  //     );
-
-  //     return res.status(200).json({
-  //       message: "Meal preference updated successfully",
-  //       data: mealPreference,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
-
-  // delete meal preference
-  async deleteMealPreference(req: Request, res: Response, next: NextFunction) {
+  async updateMealPreference(req: Request, res: Response, next: NextFunction) {
     try {
-      const mealPreferenceId = Number(req.params.mealPreferenceId);
       const currentUser = req.session.user;
-
-      if (!mealPreferenceId) {
-        throw new ApplicationError("Meal preference id is required", 400);
-      }
+      const payload = updateMealPreference.parse(req.body);
 
       if (!currentUser) {
         throw new ApplicationError("User not found", 404);
       }
 
-      const mealPreference = await this.mealPreferenceService.deleteMealPreference(
-        mealPreferenceId,
+      const mealPreference = await this.mealPreferenceService.updateMealPreference(
         currentUser,
+        payload,
       );
 
       return res.status(200).json({
-        message: "Meal preference deleted successfully",
+        message: "Meal preference updated successfully",
         data: mealPreference,
       });
     } catch (error) {
       next(error);
     }
   }
+
+
 }

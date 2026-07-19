@@ -47,26 +47,32 @@ export default class MealPreferenceService {
       isActive: true,
     };
 
-    const startDate = new Date(queries.date);
-    startDate.setUTCHours(0, 0, 0, 0);
-
-    const endDate = new Date(startDate);
-    endDate.setUTCDate(endDate.getUTCDate() + 1);
-
     const include: Prisma.MealTypeInclude = {
       foodMenu: {
+        omit: {
+          createdAt: true,
+          updatedAt: true,
+          date: true,
+          hostelId: true,
+          mealTypeId: true,
+        },
         where: {
-          date: {
-            gte: startDate,
-            lt: endDate,
-          },
+          date: queries.date,
         },
       },
+    };
+
+    const omit: Prisma.MealTypeOmit = {
+      createdAt: true,
+      updatedAt: true,
+      isActive: true,
+      deletedAt: true,
     };
 
     const mealType = await this.mealTypeRepository.getMealTypes({
       filters,
       include,
+      omit,
     });
 
     return mealType;
@@ -76,9 +82,9 @@ export default class MealPreferenceService {
     payload: CreateMealPreference,
     currentUser: CurrentUser,
   ) {
-    const tenant = await this.tenantRepository.getTenantDetail(
-      payload.tenantId,
-    );
+    const tenant = await this.tenantRepository.getTenantDetail({
+      filters: { userId: payload.tenantId },
+    });
 
     if (!tenant) {
       throw new ApplicationError("Tenant not found", 404);
@@ -101,52 +107,44 @@ export default class MealPreferenceService {
     return mealPreference;
   }
 
-  // async updateMealPreference(
-  //   mealPreferenceId: number,
-  //   currentUser: CurrentUser,
-  //   payload: UpdateMealPreference,
-  // ) {
-  //   const mealPreference =
-  //     await this.mealPreferenceRepository.getMealPreferenceDetail(
-  //       mealPreferenceId,
-  //     );
-
-  //   if (!mealPreference) {
-  //     throw new ApplicationError("Meal preference not found", 404);
-  //   }
-
-  //   const updatedMealPreference =
-  //     await this.mealPreferenceRepository.updateMealPreference(
-  //       mealPreferenceId,
-  //       {
-  //         ...(payload.mealPackId !== undefined && {
-  //           mealPackId: payload.mealPackId,
-  //         }),
-  //         ...(payload.dayCategory !== undefined && {
-  //           dayCategory: payload.dayCategory,
-  //         }),
-  //         ...(payload.isActive !== undefined && { isActive: payload.isActive }),
-  //       },
-  //     );
-
-  //   return updatedMealPreference;
-  // }
-
-  async deleteMealPreference(
-    mealPreferenceId: number,
+  async updateMealPreference(
     currentUser: CurrentUser,
+    payload: UpdateMealPreference,
   ) {
-    // const mealPreference =
-    //   await this.mealPreferenceRepository.getMealPreferenceDetail(
-    //     mealPreferenceId,
-    //   );
-    // if (!mealPreference) {
-    //   throw new ApplicationError("Meal preference not found", 404);
-    // }
-    // const deletedMealPreference =
-    //   await this.mealPreferenceRepository.deleteMealPreference(
-    //     mealPreferenceId,
-    //   );
-    // return deletedMealPreference;
+    const tenant = await this.tenantRepository.getTenantDetail({
+      filters: { userId: payload.tenantId },
+    });
+
+    if (!tenant) {
+      throw new ApplicationError("Tenant not found", 404);
+    }
+
+    if (!tenant.hostelId) {
+      throw new ApplicationError("Tenant hostel not assigned", 404);
+    }
+
+    if (currentUser.role === "admin") {
+      await this.userService.validateHostelAccessForAdmin(
+        tenant.hostelId,
+        currentUser.userId,
+      );
+    }
+
+    const updatedMealPreference =
+      await this.mealPreferenceRepository.updateMealPreference(
+        payload.tenantId,
+        {
+          ...(payload.allergies !== undefined && {
+            allergies: payload.allergies,
+          }),
+          ...(payload.foodPlan !== undefined && { foodPlan: payload.foodPlan }),
+        },
+
+        payload.mealPackIds !== undefined && payload.mealPackIds.length > 0
+          ? payload.mealPackIds
+          : undefined,
+      );
+
+    return updatedMealPreference;
   }
 }

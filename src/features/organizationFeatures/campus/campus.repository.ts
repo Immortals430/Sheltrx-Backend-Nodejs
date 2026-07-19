@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import type { CreateCampus } from "./campus.validatior";
 import { Prisma } from "generated/prisma/browser";
 // import { Prisma } from "generated/prisma/client";

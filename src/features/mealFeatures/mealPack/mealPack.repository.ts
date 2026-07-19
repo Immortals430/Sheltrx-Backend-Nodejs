@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import type { Prisma, FoodPlan, DayCategory } from "generated/prisma/client";
 
 interface CreatePayload {
@@ -20,15 +20,12 @@ interface UpdatePayload {
 export default class MealPackRepository {
   async getMealPacks(
     filters: Prisma.MealPackWhereInput,
-    skip: number = 0,
-    limit: number = 10,
+
     sortBy: "createdAt" = "createdAt",
     sortOrder: "asc" | "desc" = "desc",
   ) {
     return await prisma.mealPack.findMany({
       where: filters,
-      skip,
-      take: limit,
       orderBy: {
         [sortBy]: sortOrder,
       },

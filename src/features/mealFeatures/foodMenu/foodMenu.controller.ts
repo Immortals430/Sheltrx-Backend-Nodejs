@@ -76,15 +76,15 @@ export default class FoodMenuController {
         throw new ApplicationError("User not found", 404);
       }
 
-      // const foodMenu = await this.foodMenuService.updateFoodMenu(
-      //   foodMenuId,
-      //   currentUser,
-      //   payload,
-      // );
+      const foodMenu = await this.foodMenuService.updateFoodMenu(
+        foodMenuId,
+        payload,
+        currentUser,
+      );
 
       return res.status(200).json({
         message: "Food menu updated successfully",
-        // data: foodMenu,
+        data: foodMenu,
       });
     } catch (error) {
       next(error);

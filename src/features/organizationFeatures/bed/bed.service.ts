@@ -2,7 +2,7 @@ import type { BedQueries, CreateBeds, UpdateBed } from "./bed.validator";
 import type { Prisma } from "generated/prisma/client";
 import BedRepository from "./bed.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import type { CurrentUser } from "@/types/express";
 import HostelRepository from "../hostel/hostel.repository";
 import RoomRepository from "../room/room.repository";

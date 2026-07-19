@@ -4,7 +4,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { RedisStore } from "connect-redis";
-import {redisClient} from "./lib/redis.js";
+import { redisClient } from "./config/redis.js";
 import errorhandler from "./middleware/errorHandler.js";
 import authRouter from "./features/auth/auth.routes.js";
 import institutionRouter from "./features/organizationFeatures/instittution/institution.routes.js";
@@ -22,6 +22,8 @@ import mealPackRouter from "./features/mealFeatures/mealPack/mealPack.routes.js"
 import mealPreferenceRouter from "./features/mealFeatures/mealPreference/mealPreference.routes.js";
 import menuPresetRouter from "./features/mealFeatures/menuPreset/menuPreset.routes.js";
 import foodMenuRouter from "./features/mealFeatures/foodMenu/foodMenu.routes.js";
+import qrRouter from "./features/mealFeatures/qr/qr.routes.js";
+import mealOptOutRouter from "./features/mealFeatures/mealOptOut/mealOptOut.routes.js";
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -67,7 +69,9 @@ app.use("/api/v1/food-menu", foodMenuRouter);
 app.use("/api/v1/meal-type", mealTypeRouter);
 app.use("/api/v1/meal-pack", mealPackRouter);
 app.use("/api/v1/meal-preference", mealPreferenceRouter);
+app.use("/api/v1/qr", qrRouter);
+app.use("/api/v1/meal-opt-out", mealOptOutRouter);
 
 app.use(errorhandler);
 
-export default app
+export default app;

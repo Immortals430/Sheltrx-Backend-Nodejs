@@ -1,5 +1,9 @@
 import type { CurrentUser } from "@/types/express";
-import type { CreateFoodMenu, FoodMenuQueries } from "./foodMenu.validator";
+import type {
+  CreateFoodMenu,
+  FoodMenuQueries,
+  UpdateFoodMenu,
+} from "./foodMenu.validator";
 import { Prisma } from "generated/prisma/client";
 import FoodMenuRepository from "./foodMenu.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
@@ -26,11 +30,47 @@ export default class FoodMenuService {
 
   async getFoodMenus(queries: FoodMenuQueries, currentUser: CurrentUser) {
     const filters: Prisma.MealTypeWhereInput = {
-      // ...(currentUser.role === "admin" && )
+      hostelId: queries.hostelId,
+
+      ...(currentUser.role === "admin" && {
+        hostel: {
+          campus: {
+            admin: {
+              some: {
+                userId: currentUser.userId,
+              },
+            },
+          },
+        },
+      }),
+    };
+
+    const include: Prisma.MealTypeInclude = {
+      foodMenu: {
+        omit: {
+          createdAt: true,
+          updatedAt: true,
+          date: true,
+          hostelId: true,
+          mealTypeId: true,
+        },
+        where: {
+          date: queries.date,
+        },
+      },
+    };
+
+    const omit: Prisma.MealTypeOmit = {
+      createdAt: true,
+      updatedAt: true,
+      isActive: true,
+      deletedAt: true,
     };
 
     const mealType = await this.mealTypeRepository.getMealTypes({
       filters,
+      include,
+      omit,
     });
 
     return mealType;
@@ -43,9 +83,9 @@ export default class FoodMenuService {
 
     if (!hostel) throw new ApplicationError("Hostel not found", 404);
 
-    const mealType = await this.mealTypeRepository.getMealTypeDetail(
-      payload.mealTypeId,
-    );
+    const mealType = await this.mealTypeRepository.getMealTypeDetail({
+      filters: { id: payload.mealTypeId },
+    });
 
     if (!mealType || mealType.hostelId !== payload.hostelId)
       throw new ApplicationError("Meal type not found in this hostel", 404);
@@ -95,16 +135,50 @@ export default class FoodMenuService {
     return foodMenu;
   }
 
+  async updateFoodMenu(
+    foodMenuId: number,
+    payload: UpdateFoodMenu,
+    currentUser: CurrentUser,
+  ) {
+    const foodMenu = await this.foodMenuRepository.getFoodMenuDetail({
+      foodMenuId,
+    });
+    if (!foodMenu) throw new ApplicationError("FoodMenu not found", 404);
 
+    if (currentUser.role === "admin") {
+      await this.userService.validateHostelAccessForAdmin(
+        foodMenu.hostelId,
+        currentUser.userId,
+      );
+    }
 
+    type MenuPresetItemShape = { veg: string[]; nonVeg: string[] };
 
+    let presetItem: MenuPresetItemShape | undefined;
 
+    if (payload.menuPresetId) {
+      const menuPreset = await this.menuPresetRepository.getMenuPresetDetail(
+        payload.menuPresetId,
+      );
 
+      if (!menuPreset || menuPreset.hostelId !== foodMenu.hostelId)
+        throw new ApplicationError("Menu preset not found in this hostel", 404);
 
+      presetItem = menuPreset.menuPresetItem as unknown as MenuPresetItemShape;
+    }
 
+    const updatedFoodMenu = await this.foodMenuRepository.updateFoodMenu(
+      foodMenuId,
+      {
+        foodItem: {
+          veg: presetItem?.veg ?? payload.customFoodItem?.veg ?? [],
+          nonVeg: presetItem?.nonVeg ?? payload.customFoodItem?.nonVeg ?? [],
+        },
+      },
+    );
 
-
-  
+    return updatedFoodMenu;
+  }
 
   async deleteFoodMenu(foodMenuId: number, currentUser: CurrentUser) {
     const foodMenu = await this.foodMenuRepository.getFoodMenuDetail({

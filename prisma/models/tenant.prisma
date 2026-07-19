@@ -7,9 +7,9 @@ model Tenant {
   address               Json?
   comment               String?
   dob                   String?
-  expectedExitDate      String?
+  expectedExitDate      DateTime @default(dbgenerated("'9999-12-31'::date")) @db.Date
+  joiningDate           DateTime @db.Date
   gender                Gender
-  joiningDate           String
   localGuardianName     String?
   localGuardianPhone    String?
   localGuardianRelation String?

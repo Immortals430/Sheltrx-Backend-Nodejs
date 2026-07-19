@@ -5,9 +5,8 @@ import RoomRepository from "./room.repository";
 import HostelRepository from "../hostel/hostel.repository";
 import { ApplicationError } from "@/middleware/errorHandler";
 import RoomTypeRepository from "../roomType/roomType.repository";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/config/prisma";
 import BedRepository from "../bed/bed.repository";
-import type { UpdatePayload } from "../roomType/roomType.validator";
 import UserService from "../../userFeatures/user/user.service";
 
 export default class RoomService {
